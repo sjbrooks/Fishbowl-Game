@@ -2,10 +2,10 @@ import os
 
 from flask import Flask, render_template, request, flash, redirect
 
-# revisit for authentication
+# revisit for authentication 
 # from flask import session, g
+
 from flask_debugtoolbar import DebugToolbarExtension
-# from sqlalchemy.exc import IntegrityError
 
 from forms import PhraseForm
 from models import db, connect_db, Phrase
@@ -16,24 +16,19 @@ from secrets import SECRET_KEY
 
 app = Flask(__name__)
 
-# Get DB_URI from environ variable (useful for production/testing) or,
-# if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] = (
-os.environ.get('DATABASE_URL', 'postgres:///fish_bowl'))
+os.environ.get('DATABASE_URL', 'postgres:///fishbowl'))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', SECRET_KEY)
-
-# Having the Debug Toolbar show redirects explicitly is often useful;
-# however, if you want to turn it off, you can uncomment this line:
-#
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
+db.create_all()
 
 # revisit techniques to "dry up" some of this repetition
 # in pulling values from the form
@@ -46,7 +41,7 @@ def homepage():
     form = PhraseForm()
 
     if form.validate_on_submit():
-        phrase = form.data.phrase
+        phrase = form.phrase.data
         phrase = Phrase(phrase=phrase)
 
         db.session.add(phrase)
@@ -56,3 +51,15 @@ def homepage():
 
     else:
         return render_template('phrase-form.html', form=form)
+
+
+@app.route('/reset-game')
+def reset_game():
+    """
+    Deletes all rows from the phrases table to start a new game.
+    """
+    
+    Phrase.query.delete()
+    db.session.commit()
+
+    return redirect('/')

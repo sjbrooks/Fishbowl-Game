@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length, URL, InputRequired
+from wtforms import StringField
+from wtforms.validators import DataRequired
 
 
 class PhraseForm(FlaskForm):
     """Form for adding phrases."""
 
-    phrase = TextAreaField('Word or Phrase', validators=[DataRequired()])
+    phrase = StringField('Word or Phrase', validators=[DataRequired()])

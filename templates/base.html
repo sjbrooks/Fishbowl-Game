@@ -10,6 +10,8 @@
     crossorigin="anonymous"></script>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 </head>
 
 <body>
@@ -20,19 +22,24 @@
     </h1>
 
     {% for msg in get_flashed_messages() %}
-      <p class="alert alert-info">
-        {{ msg }}
-      </p>
+    <p class="alert alert-info">
+      {{ msg }}
+    </p>
     {% endfor %}
+
+    <span class="fa-layers fa-fw">
+      <i class="fas fa-fish fa-7x fa-layers"></i>
+        <span id="fish-count" class="fa-layers-text fa-inverse" data-fa-transform="shrink-8 down-3" style="font-weight:900"></span>
+    </span>
 
     <div class="container">
       {% block content %}
       {% endblock %}
     </div>
-    </div>
-    <script src="https://unpkg.com/axios/dist/axios.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <script src="/static/fish-bowl.js"></script>
+  </div>
+  <script src="https://unpkg.com/axios/dist/axios.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="/static/fish-bowl.js"></script>
 </body>
 
 </html>

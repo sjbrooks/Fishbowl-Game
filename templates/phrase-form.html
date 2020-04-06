@@ -6,7 +6,7 @@ Fish Bowl
 
 {% block content %}
 
-<form id="create-user-form" method="POST">
+<form id="add-phrase-form" method="POST">
   {{ form.hidden_tag() }}
 
   {% for field in form 
@@ -22,6 +22,10 @@ Fish Bowl
   </div>
   {% endfor %}
   <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<form action="/reset-game" method="get">
+  <button type="submit" class="btn btn-danger">Reset Game</button>
 </form>
 
 {% endblock %}
