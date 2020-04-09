@@ -38,9 +38,13 @@ db.create_all()
 # in pulling values from the form
 
 
-def switch_models():
-    OTHER_MODEL = CURR_MODEL
-    CURR_MODEL = (DrawnPhrase if CURR_MODEL == Phrase else Phrase)
+def switch_models(CURR_MODEL, OTHER_MODEL):
+    print("\n\n\n\nthe CURRENT MODEL IS", CURR_MODEL)
+    
+    CURR = (Phrase if OTHER_MODEL == DrawnPhrase else DrawnPhrase)
+    OTHER = (DrawnPhrase if CURR_MODEL == Phrase else Phrase)
+
+    return [CURR, OTHER]
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -71,6 +75,7 @@ def reset_game():
     """
     
     Phrase.query.delete()
+    DrawnPhrase.query.delete()
     db.session.commit()
 
     return redirect('/')
@@ -94,7 +99,9 @@ def draw_card():
     """
 
     if db.session.query(CURR_MODEL).count() == 0:
-        switch_models()
+        global CURR_MODEL
+        global OTHER_MODEL
+        [CURR_MODEL, OTHER_MODEL] = switch_models(CURR_MODEL, OTHER_MODEL)
 
     rand_phrase = choice(CURR_MODEL.query.all())
 

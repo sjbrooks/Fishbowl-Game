@@ -7,7 +7,9 @@ Fish Bowl
 {% block content %}
 
 <h1>
+  {% if phrase %}
   {{ phrase.phrase }}
+  {% endif %}
 </h1>
 
 <form action="/reset-game" method="get">
