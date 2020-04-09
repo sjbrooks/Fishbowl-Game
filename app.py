@@ -82,9 +82,8 @@ def reset_game():
     CURR_MODEL = Phrase
     OTHER_MODEL = DrawnPhrase
 
-    Phrase.query.delete()
-    DrawnPhrase.query.delete()
-    db.session.commit()
+    db.drop_all()
+    db.create_all()
 
     return redirect('/')
 
@@ -109,7 +108,8 @@ def draw_card():
     rand_phrase = choice(CURR_MODEL.query.all())
 
     phrase = OTHER_MODEL(phrase=rand_phrase.phrase)
-    phrase_curr_model = CURR_MODEL.query.filter(CURR_MODEL.phrase == phrase.phrase).one()
+    phrase_curr_model = CURR_MODEL.query.filter(
+                        CURR_MODEL.phrase == phrase.phrase).one()
 
     print("\n\n\n\nthe phrase from the current model is", phrase_curr_model.phrase)
 
@@ -125,8 +125,8 @@ def draw_card():
         global CURR_ROUND
         flash(f'Round {CURR_ROUND} complete!')
         CURR_ROUND += 1
-        
-        return render_template('draw-card.html')
+
+        return render_template('new-round.html', phrase=phrase_curr_model)
 
     return render_template('draw-card.html', phrase=phrase_curr_model)
     

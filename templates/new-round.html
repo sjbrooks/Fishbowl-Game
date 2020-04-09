@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block headline %}
+Fish Bowl
+{% endblock %}
+
+{% block content %}
+
+<h1>
+  {% if phrase %}
+  {{ phrase.phrase }}
+  {% endif %}
+</h1>
+
+<form action="/draw-card" method="get">
+  <button type="submit" class="btn btn-info m-3">Start Next Round</button>
+</form>
+
+<form action="/reset-game" method="get">
+  <button type="submit" class="btn btn-danger m-3">Reset Game</button>
+</form>
+
+{% endblock %}
