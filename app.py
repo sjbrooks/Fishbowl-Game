@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template, request, flash, redirect
+from random import choice
 
 # revisit for authentication 
 # from flask import session, g
@@ -8,11 +9,14 @@ from flask import Flask, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 
 from forms import PhraseForm
-from models import db, connect_db, Phrase
+from models import db, connect_db, Phrase, DrawnPhrase
 from secrets import SECRET_KEY
 
 # Come back to idea of authentication later
 # CURR_USER_KEY = "curr_user"
+
+CURR_MODEL = Phrase
+OTHER_MODEL = DrawnPhrase
 
 app = Flask(__name__)
 
@@ -32,6 +36,13 @@ db.create_all()
 
 # revisit techniques to "dry up" some of this repetition
 # in pulling values from the form
+
+
+def switch_models():
+    OTHER_MODEL = CURR_MODEL
+    CURR_MODEL = (DrawnPhrase if CURR_MODEL == Phrase else Phrase)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     """
@@ -63,3 +74,40 @@ def reset_game():
     db.session.commit()
 
     return redirect('/')
+
+
+@app.route('/start-game')
+def start_game():
+    """
+    Starts the game by rendering a new page that doesn't have a submit button 
+    but has a new button that allows you to draw a card
+    """
+
+    return render_template('draw-card.html')
+
+
+@app.route('/draw-card')
+def draw_card():
+    """
+    Picks a random card from database, add it to another table (drawn_cards), 
+    and remove it from the current table (phrases).
+    """
+
+    if db.session.query(CURR_MODEL).count() == 0:
+        switch_models()
+
+    rand_phrase = choice(CURR_MODEL.query.all())
+
+    phrase = OTHER_MODEL(phrase=rand_phrase.phrase)
+    phrase_curr_model = CURR_MODEL.query.filter(CURR_MODEL.phrase == phrase.phrase).one()
+
+    print("\n\n\n\nthe phrase from the current model is", phrase_curr_model.phrase)
+
+    db.session.add(phrase)
+    db.session.commit()
+
+    db.session.delete(phrase_curr_model)
+    db.session.commit()
+
+    return render_template('draw-card.html', phrase=phrase_curr_model)
+    

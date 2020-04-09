@@ -33,3 +33,20 @@ class Phrase(db.Model):
 
     def __repr__(self):
         return f"<Like #{self.id}: {self.phrase}>"
+
+
+class DrawnPhrase(db.Model):
+    """DrawnPhrase class."""
+
+    __tablename__ = 'drawn_cards'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    phrase = db.Column(db.Text,
+                       nullable=False)
+
+    def __repr__(self):
+        return f"<Like #{self.id}: {self.phrase}>"
