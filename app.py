@@ -17,6 +17,7 @@ from secrets import SECRET_KEY
 
 CURR_MODEL = Phrase
 OTHER_MODEL = DrawnPhrase
+CURR_ROUND = 1
 
 app = Flask(__name__)
 
@@ -38,13 +39,11 @@ db.create_all()
 # in pulling values from the form
 
 
-def switch_models(CURR_MODEL, OTHER_MODEL):
-    print("\n\n\n\nthe CURRENT MODEL IS", CURR_MODEL)
-    
-    CURR = (Phrase if OTHER_MODEL == DrawnPhrase else DrawnPhrase)
-    OTHER = (DrawnPhrase if CURR_MODEL == Phrase else Phrase)
+def switch_models():
+    global CURR_MODEL
+    global OTHER_MODEL
 
-    return [CURR, OTHER]
+    CURR_MODEL, OTHER_MODEL = OTHER_MODEL, CURR_MODEL
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -72,8 +71,17 @@ def homepage():
 def reset_game():
     """
     Deletes all rows from the phrases table to start a new game.
+    Reset all the default global variables for current round and models.
     """
+
+    global CURR_ROUND
+    global CURR_MODEL
+    global OTHER_MODEL
     
+    CURR_ROUND = 1
+    CURR_MODEL = Phrase
+    OTHER_MODEL = DrawnPhrase
+
     Phrase.query.delete()
     DrawnPhrase.query.delete()
     db.session.commit()
@@ -98,11 +106,6 @@ def draw_card():
     and remove it from the current table (phrases).
     """
 
-    if db.session.query(CURR_MODEL).count() == 0:
-        global CURR_MODEL
-        global OTHER_MODEL
-        [CURR_MODEL, OTHER_MODEL] = switch_models(CURR_MODEL, OTHER_MODEL)
-
     rand_phrase = choice(CURR_MODEL.query.all())
 
     phrase = OTHER_MODEL(phrase=rand_phrase.phrase)
@@ -115,6 +118,15 @@ def draw_card():
 
     db.session.delete(phrase_curr_model)
     db.session.commit()
+
+    if db.session.query(CURR_MODEL).count() == 0:
+        switch_models()
+
+        global CURR_ROUND
+        flash(f'Round {CURR_ROUND} complete!')
+        CURR_ROUND += 1
+        
+        return render_template('draw-card.html')
 
     return render_template('draw-card.html', phrase=phrase_curr_model)
     
