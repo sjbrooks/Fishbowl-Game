@@ -10,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from forms import PhraseForm
 from models import db, connect_db, Phrase, DrawnPhrase
-from secrets import SECRET_KEY
+# from secrets import SECRET_KEY
 
 # Come back to idea of authentication later
 # CURR_USER_KEY = "curr_user"
@@ -26,7 +26,7 @@ os.environ.get('DATABASE_URL', 'postgres:///fishbowl'))
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', SECRET_KEY)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'secretshh')
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 toolbar = DebugToolbarExtension(app)
