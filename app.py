@@ -10,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from forms import PhraseForm
 from models import db, connect_db, Phrase, DrawnPhrase
-# from secrets import SECRET_KEY
+from secrets import SECRET_KEY
 
 # Come back to idea of authentication later
 # CURR_USER_KEY = "curr_user"
@@ -39,11 +39,12 @@ db.create_all()
 # in pulling values from the form
 
 
-def switch_models():
-    global CURR_MODEL
-    global OTHER_MODEL
+### May be able to remove now
+# def switch_models():
+#     global CURR_MODEL
+#     global OTHER_MODEL
 
-    CURR_MODEL, OTHER_MODEL = OTHER_MODEL, CURR_MODEL
+#     CURR_MODEL, OTHER_MODEL = OTHER_MODEL, CURR_MODEL
 
 
 @app.route('/', methods=['GET', 'POST'])
